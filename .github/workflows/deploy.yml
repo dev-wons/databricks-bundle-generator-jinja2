@@ -68,10 +68,3 @@ jobs:
           echo "🚀 Deploying Databricks Bundle to target environment: ${TARGET}..."
           databricks bundle deploy -t ${TARGET}
 
-      - name: Trigger Pipeline Run (Optional)
-        if: github.event.inputs.target_env == 'dev'
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: |
-          databricks bundle run medallion_dlt_pipeline -t dev

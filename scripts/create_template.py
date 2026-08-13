@@ -21,7 +21,7 @@ resources:
 
       edition: ADVANCED
       channel: CURRENT
-      continuous: false
+      continuous: true
       development: false
 
       # Compute Configuration (Serverless compute enabled)

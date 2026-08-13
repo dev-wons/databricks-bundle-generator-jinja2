@@ -8,7 +8,7 @@ resources:
 
       edition: ADVANCED
       channel: CURRENT
-      continuous: false
+      continuous: true
       development: false
 
       # Compute Configuration: Serverless compute enabled
@@ -17,6 +17,10 @@ resources:
       # Libraries & Code Sources (Auto-discovered via Jinja2 glob)
       libraries:
         {% for file in glob_files("src/models/**/*.py") %}
+        - notebook:
+            path: ../../{{ file }}
+        {% endfor %}
+        {% for file in glob_files("src/models/**/*.sql") %}
         - notebook:
             path: ../../{{ file }}
         {% endfor %}
