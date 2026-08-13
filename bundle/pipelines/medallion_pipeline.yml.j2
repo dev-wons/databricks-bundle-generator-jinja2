@@ -17,14 +17,20 @@ resources:
 {% include "includes/cluster_config.yml.j2" %}
 {% endfilter %}
 
-      # Libraries & Code Sources
+      # Libraries & Code Sources (Auto-discovered via Jinja2 glob)
       libraries:
+        {% for file in glob_files("src/models/bronze/**/*.py") %}
         - notebook:
-            path: ../src/models/bronze
+            path: ../../{{ file }}
+        {% endfor %}
+        {% for file in glob_files("src/models/silver/**/*.py") %}
         - notebook:
-            path: ../src/models/silver
+            path: ../../{{ file }}
+        {% endfor %}
+        {% for file in glob_files("src/models/gold/**/*.py") %}
         - notebook:
-            path: ../src/models/gold
+            path: ../../{{ file }}
+        {% endfor %}
 
       # Runtime Configuration
       configuration:

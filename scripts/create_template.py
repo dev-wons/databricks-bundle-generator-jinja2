@@ -30,10 +30,12 @@ resources:
 {% include "includes/cluster_config.yml.j2" %}
 {% endfilter %}
 
-      # Libraries & Code Sources
+      # Libraries & Code Sources (Auto-discovered via Jinja2 glob)
       libraries:
+        {% for file in glob_files("src/models/{name}/**/*.py") %}
         - notebook:
-            path: ../src/models/{name}
+            path: ../../{{ file }}
+        {% endfor %}
 
       # Runtime Configuration
       configuration:
@@ -83,7 +85,7 @@ resources:
       tasks:
         - task_key: run_{name}_task
           notebook_task:
-            notebook_path: ../src/jobs/{name}_job.py
+            notebook_path: ../../src/jobs/{name}_job.py
 
       # Schedule
       {% if environment == 'prod' %}
