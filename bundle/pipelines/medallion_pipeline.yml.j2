@@ -11,15 +11,8 @@ resources:
       continuous: false
       development: {% if environment != 'prod' %}true{% else %}false{% endif %}
 
-      # Compute Configuration (Serverless cannot specify custom clusters)
-      {% if is_prod %}
+      # Compute Configuration: Serverless compute enabled
       serverless: true
-      {% else %}
-      serverless: false
-{% filter indent(6) %}
-{% include "includes/cluster_config.yml.j2" %}
-{% endfilter %}
-      {% endif %}
 
       # Libraries & Code Sources (Auto-discovered via Jinja2 glob)
       libraries:

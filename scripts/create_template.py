@@ -24,11 +24,8 @@ resources:
       continuous: false
       development: {% if environment != 'prod' %}true{% else %}false{% endif %}
 
-      # Compute Configuration
+      # Compute Configuration (Serverless compute enabled)
       serverless: true
-{% filter indent(6) %}
-{% include "includes/cluster_config.yml.j2" %}
-{% endfilter %}
 
       # Libraries & Code Sources (Folder paths via file:)
       libraries:
@@ -114,16 +111,13 @@ resources:
 
       {% if environment == 'prod' %}
       grants:
-        - principal: "data_analysts_prod"
+        - principal: "users"
           privileges:
             - "USE_SCHEMA"
             - "SELECT"
-        - principal: "data_engineers_prod"
-          privileges:
-            - "ALL_PRIVILEGES"
       {% else %}
       grants:
-        - principal: "data_engineering_team"
+        - principal: "${workspace.current_user.userName}"
           privileges:
             - "ALL_PRIVILEGES"
       {% endif %}
@@ -138,13 +132,13 @@ resources:
 
       {% if environment == 'prod' %}
       grants:
-        - principal: "data_engineers_prod"
+        - principal: "users"
           privileges:
             - "READ_VOLUME"
             - "WRITE_VOLUME"
       {% else %}
       grants:
-        - principal: "data_engineering_team"
+        - principal: "${workspace.current_user.userName}"
           privileges:
             - "READ_VOLUME"
             - "WRITE_VOLUME"
