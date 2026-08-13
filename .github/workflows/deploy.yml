@@ -32,7 +32,8 @@ jobs:
           pip install jinja2 databricks-sdk
 
       - name: Setup Databricks CLI
-        uses: databricks/setup-cli@v0
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
       - name: Determine Target Environment
         id: env
@@ -49,13 +50,22 @@ jobs:
         run: |
           python scripts/render_bundle.py
 
+      - name: Validate Databricks Bundle
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          TARGET=${{ steps.env.outputs.target }}
+          echo "🔍 Validating Databricks Bundle for target environment: ${TARGET}..."
+          databricks bundle validate -e ${TARGET}
+
       - name: Deploy Bundle
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           TARGET=${{ steps.env.outputs.target }}
-          echo "Deploying Databricks Bundle to target environment: ${TARGET}..."
+          echo "🚀 Deploying Databricks Bundle to target environment: ${TARGET}..."
           databricks bundle deploy -e ${TARGET}
 
       - name: Trigger Pipeline Run (Optional)
