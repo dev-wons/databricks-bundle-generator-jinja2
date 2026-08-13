@@ -27,7 +27,7 @@ jobs:
           pip install jinja2 databricks-sdk
 
       - name: Setup Databricks CLI
-        uses: databricks/setup-cli@v0.2.3
+        uses: databricks/setup-cli@v0
 
       - name: Render Jinja2 Templates (Dev Target)
         env:
