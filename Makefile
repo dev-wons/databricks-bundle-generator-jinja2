@@ -22,11 +22,11 @@ render:
 
 validate: render
 	@echo "🔍 Validating Databricks Asset Bundle for TARGET=$(TARGET)..."
-	databricks bundle validate -e $(TARGET)
+	databricks bundle validate -t $(TARGET)
 
 deploy: validate
 	@echo "🚀 Deploying Databricks Asset Bundle for TARGET=$(TARGET)..."
-	databricks bundle deploy -e $(TARGET)
+	databricks bundle deploy -t $(TARGET)
 
 clean:
 	@echo "🧹 Cleaning dist_bundle directory..."
