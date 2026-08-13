@@ -1,0 +1,45 @@
+# bundle/governance/schema_governance.yml.j2
+resources:
+  schemas:
+    medallion_dlt_schema:
+      name: "${var.schema_prefix}_medallion_nyctaxi"
+      catalog_name: "${var.catalog}"
+      comment: "Managed Medallion DLT schema for {{ environment }} environment"
+
+      {% if environment == 'prod' %}
+      grants:
+        - principal: "data_analysts_prod"
+          privileges:
+            - "USE_SCHEMA"
+            - "SELECT"
+        - principal: "data_engineers_prod"
+          privileges:
+            - "ALL_PRIVILEGES"
+      {% else %}
+      grants:
+        - principal: "data_engineering_team"
+          privileges:
+            - "ALL_PRIVILEGES"
+      {% endif %}
+
+  volumes:
+    raw_landing_volume:
+      name: "landing_raw"
+      catalog_name: "${var.catalog}"
+      schema_name: "${var.schema_prefix}_medallion_nyctaxi"
+      volume_type: "MANAGED"
+      comment: "Raw ingestion landing volume for {{ environment }}"
+
+      {% if environment == 'prod' %}
+      grants:
+        - principal: "data_engineers_prod"
+          privileges:
+            - "READ_VOLUME"
+            - "WRITE_VOLUME"
+      {% else %}
+      grants:
+        - principal: "data_engineering_team"
+          privileges:
+            - "READ_VOLUME"
+            - "WRITE_VOLUME"
+      {% endif %}

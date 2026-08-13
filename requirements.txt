@@ -1,0 +1,5 @@
+# Databricks Asset Bundle & Local Development Dependencies
+databricks-sdk>=0.20.0
+jinja2>=3.1.0
+pyspark>=3.5.0
+pytest>=8.0.0

@@ -1,0 +1,67 @@
+name: Databricks Asset Bundle Deployment
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    inputs:
+      target_env:
+        description: 'Deployment Target Environment (dev, staging, prod)'
+        required: true
+        default: 'dev'
+
+jobs:
+  deploy:
+    name: Render Jinja2 & Deploy Bundle
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jinja2 databricks-sdk
+
+      - name: Setup Databricks CLI
+        uses: databricks/setup-cli@v0.2.3
+
+      - name: Determine Target Environment
+        id: env
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "target=${{ github.event.inputs.target_env }}" >> $GITHUB_OUTPUT
+          else
+            echo "target=dev" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Render Jinja2 Templates
+        env:
+          BUNDLE_TARGET: ${{ steps.env.outputs.target }}
+        run: |
+          python scripts/render_bundle.py
+
+      - name: Deploy Bundle
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          TARGET=${{ steps.env.outputs.target }}
+          echo "Deploying Databricks Bundle to target environment: ${TARGET}..."
+          databricks bundle deploy -e ${TARGET}
+
+      - name: Trigger Pipeline Run (Optional)
+        if: github.event.inputs.target_env == 'dev'
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          databricks bundle run medallion_dlt_pipeline -e dev

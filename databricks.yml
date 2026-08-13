@@ -1,0 +1,51 @@
+bundle:
+  name: medallion_sdp_bundle
+
+include:
+  - dist_bundle/resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog name
+    default: main
+  schema_prefix:
+    description: Environment schema prefix
+    default: dev
+  node_type_id:
+    description: Azure VM node size for job cluster
+    default: Standard_DS3_v2
+  spark_version:
+    description: Databricks Runtime version
+    default: 14.3.x-scala2.12
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      host: ${sys.DATABRICKS_HOST}
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: main
+      schema_prefix: dev
+      node_type_id: Standard_DS3_v2
+
+  staging:
+    mode: production
+    workspace:
+      host: ${sys.DATABRICKS_HOST}
+      root_path: /Shared/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: main
+      schema_prefix: staging
+      node_type_id: Standard_DS3_v2
+
+  prod:
+    mode: production
+    workspace:
+      host: ${sys.DATABRICKS_HOST}
+      root_path: /Shared/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: main
+      schema_prefix: prod
+      node_type_id: Standard_E4ds_v5
