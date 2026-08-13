@@ -14,10 +14,12 @@ resources:
       # Compute Configuration: Serverless compute enabled
       serverless: true
 
-      # Libraries & Code Sources (Folder paths via file:)
+      # Libraries & Code Sources (Auto-discovered via Jinja2 glob)
       libraries:
-        - file:
-            path: ../../src/models
+        {% for file in glob_files("src/models/**/*.py") %}
+        - notebook:
+            path: ../../{{ file }}
+        {% endfor %}
 
       # Runtime Configuration
       configuration:
