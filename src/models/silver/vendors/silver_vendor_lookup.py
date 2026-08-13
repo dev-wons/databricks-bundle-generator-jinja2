@@ -1,3 +1,4 @@
+# Databricks notebook source
 import dlt
 from pyspark.sql.functions import col, upper, trim
 

@@ -30,12 +30,10 @@ resources:
 {% include "includes/cluster_config.yml.j2" %}
 {% endfilter %}
 
-      # Libraries & Code Sources (Auto-discovered via Jinja2 glob)
+      # Libraries & Code Sources (Folder paths via file:)
       libraries:
-        {% for file in glob_files("src/models/{name}/**/*.py") %}
-        - notebook:
-            path: ../../{{ file }}
-        {% endfor %}
+        - file:
+            path: ../../src/models/{name}
 
       # Runtime Configuration
       configuration:
