@@ -66,16 +66,6 @@ resources:
     {name}_workflow:
       name: "[{{ environment }}] {title_name} Workflow"
 
-      # Job Cluster Configuration
-      job_clusters:
-        - job_cluster_key: {name}_standard_cluster
-          new_cluster:
-            spark_version: "${var.spark_version}"
-            node_type_id: "${var.node_type_id}"
-            num_workers: {% if environment == 'prod' %}2{% else %}1{% endif %}
-            spark_conf:
-              spark.databricks.delta.preview.enabled: "true"
-
       # Tasks Execution Graph
       tasks:
         - task_key: run_{name}_task
