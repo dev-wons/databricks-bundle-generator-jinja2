@@ -22,7 +22,7 @@ resources:
       edition: ADVANCED
       channel: CURRENT
       continuous: false
-      development: {% if environment != 'prod' %}true{% else %}false{% endif %}
+      development: false
 
       # Compute Configuration (Serverless compute enabled)
       serverless: true
